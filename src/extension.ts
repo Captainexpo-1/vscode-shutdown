@@ -20,7 +20,10 @@ function countErrors() {
 	return errorCount;
 }
 var statusBarItem: vscode.StatusBarItem | null = null;
-var time = 10;
+
+
+const grace_period = 5;
+var time = grace_period;
 
 const SUPER_BAD_IDEA_ONLY_ACTIVATE_IF_YOU_WANT_ETERNAL_PAIN_AND_SUFFERING = true;
 
@@ -45,7 +48,7 @@ function loop() {
 				const { exec } = require('child_process');
 				switch (process.platform) {
 					case "win32":
-						exec('shutdown /s /t 5 /c "Damn this code sucks"')
+						exec('shutdown /s /t 1 /c "Damn this code sucks" /e /d e:4:6')
 					case "linux":
 						exec('shutdown')
 					default:
@@ -54,7 +57,7 @@ function loop() {
 			}
 		}
 		else {
-			time = 5;
+			time = grace_period;
 		}
 	}
 	setTimeout(loop, 1000);
