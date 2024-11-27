@@ -45,7 +45,7 @@ function loop() {
 				const { exec } = require('child_process');
 				switch (process.platform) {
 					case "win32":
-						exec('shutdown /s')
+						exec('shutdown /s /t 5 /c "Damn this code sucks"')
 					case "linux":
 						exec('shutdown')
 					default:
