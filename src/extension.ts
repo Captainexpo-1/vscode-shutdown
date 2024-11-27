@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { exec } from 'child_process';
 
 function countErrors() {
 	// Count "problems in this file" in all source code files
@@ -29,9 +30,11 @@ const SUPER_BAD_IDEA_ONLY_ACTIVATE_IF_YOU_WANT_ETERNAL_PAIN_AND_SUFFERING = true
 
 function loop() {
 	const errors = countErrors();
+	console.log('Errors:', errors, process.platform);
 	if (statusBarItem !== null) {
 		// Add fire emoji if there are more than 3 errors
-		statusBarItem.text = errors.toString() + (errors > 3 ? ' 🔥' : '');
+		const emoji = errors > 5 ? '🔥' : errors > 3 ? '⚠️' : '';
+		statusBarItem.text = "Errors: " + emoji + errors.toString() + emoji;
 		statusBarItem.color = errors > 0 ? (errors > 3 ? 'red' : 'yellow') : 'white';
 		statusBarItem.backgroundColor = errors > 3 ? new vscode.ThemeColor('statusBarItem.errorBackground') : undefined;
 
@@ -40,19 +43,22 @@ function loop() {
 			vscode.window.showErrorMessage(`Too many errors! Shutting down in ${time} seconds...`);
 
 			if (time <= 0) {
+				console.log('Shutting down...');
 				if (!SUPER_BAD_IDEA_ONLY_ACTIVATE_IF_YOU_WANT_ETERNAL_PAIN_AND_SUFFERING) {
 					vscode.commands.executeCommand('workbench.action.closeWindow');
 					return;
 				}
 
-				const { exec } = require('child_process');
 				switch (process.platform) {
 					case "win32":
-						exec('shutdown /s /t 1 /c "Damn this code sucks" /e /d e:4:6')
+						exec('shutdown /s /c "Damn this code sucks" /t 5 /d u:4:6');
+						break;
 					case "linux":
-						exec('shutdown')
+						exec('shutdown');
+						break;
 					default:
-						exec('shutdown')
+						exec('shutdown');
+						break;
 				}
 			}
 		}
@@ -72,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Add status bar item
 	statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	statusBarItem.text = '0';
+	statusBarItem.text = 'Errors: 0';
 	statusBarItem.show();
 
 	loop();
